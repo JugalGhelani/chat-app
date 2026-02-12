@@ -1,6 +1,7 @@
 import express from "express";
 import { checkAuth, login, signup, updateProfile } from "../controllers/user.controller.js";
 import auth from "../middlewares/auth.middleware.js";
+import { upload } from "../middlewares/multer.middleware.js";
 
 const userRouter = express.Router();
 
