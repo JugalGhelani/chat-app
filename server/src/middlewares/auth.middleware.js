@@ -16,11 +16,11 @@ const auth = async (req, res, next) => {
     const user = await User.findById(decoded.userId).select("-password");
 
     if (!user) {
-        return res
+      return res
         .status(404)
         .json({ success: false, message: "User Not Found" });
     }
-    
+
     req.user = user;
     next();
   } catch (error) {

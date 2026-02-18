@@ -10,7 +10,7 @@ const LoginPage = () => {
   const [bio, setBio] = useState("");
   const [isDataSubmitted, setIsDataSubmitted] = useState(false);
 
-  const {login} = useAuthContext();
+  const { login } = useAuthContext();
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
@@ -19,7 +19,12 @@ const LoginPage = () => {
       return;
     }
 
-    login(currState === "Sign up" ? 'signup' : 'login', {fullName, email, password, bio})
+    login(currState === "Sign up" ? "signup" : "login", {
+      fullName,
+      email,
+      password,
+      bio,
+    });
   };
 
   return (

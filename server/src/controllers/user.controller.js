@@ -47,6 +47,10 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
     const userData = await User.findOne({ email });
 
+    if (!userData) {
+      return res.json({ success: false, message: "User not found" });
+    }
+
     const isPasswordCorrect = await bcrypt.compare(password, userData.password);
 
     if (!isPasswordCorrect) {
@@ -82,6 +86,10 @@ export const updateProfile = async (req, res) => {
       updateData.profilePic = cloudinaryResponse.secure_url;
     }
 
+    // console.log("BODY:", req.body);
+    // console.log("*************************");
+    // console.log("FILE:", req.file);
+
     const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
       new: true,
     }).select("-password");
@@ -90,7 +98,6 @@ export const updateProfile = async (req, res) => {
       success: true,
       user: updatedUser,
     });
-    
   } catch (error) {
     console.log(error.message);
     return res.json({ success: false, message: error.message });

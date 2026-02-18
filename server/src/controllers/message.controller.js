@@ -24,7 +24,7 @@ export const getUsersForSidebar = async (req, res) => {
       }
     });
     await Promise.all(promises);
-    res.json({ success: true, user: filteredUser, unseenMessages });
+    res.json({ success: true, users: filteredUser, unseenMessages });
   } catch (error) {
     console.log(error.message);
     res.json({ success: false, message: error.message });
@@ -92,21 +92,20 @@ export const sendMessage = async (req, res) => {
     }
 
     const newMessage = await Message.create({
-        senderId,
-        receiverId,
-        text,
-        image: imageUrl 
-    })
+      senderId,
+      receiverId,
+      text,
+      image: imageUrl,
+    });
 
     // Emit the new message to the receiver's socket
     const receiverSocketId = userSocketMap[receiverId];
     console.log(receiverSocketId);
     if (receiverSocketId) {
-        io.to(receiverSocketId).emit("newMessage", newMessage)
+      io.to(receiverSocketId).emit("newMessage", newMessage);
     }
 
-    res.json({success: true, newMessage}); 
-
+    res.json({ success: true, newMessage });
   } catch (error) {
     console.log(error.message);
     res.json({ success: false, message: error.message });

@@ -1,15 +1,29 @@
 import React, { useState } from "react";
 import assets from "../assets/assets";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../../context/AuthContext";
 
 const ProfilePage = () => {
+  const { authUser, updateProfile } = useAuthContext();
+
   const [selectedImg, setSelectedImg] = useState(null);
-  const [name, setName] = useState("Martin Johnson");
-  const [bio, setBio] = useState("Hi everyone, I'm using QuickChat");
+  const [name, setName] = useState(authUser.fullName);
+  const [bio, setBio] = useState(authUser.bio);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!selectedImg) {
+      await updateProfile({ fullName: name, bio });
+      navigate("/");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("profilePic", selectedImg);
+    formData.append("fullName", name);
+    formData.append("bio", bio);
+    await updateProfile(formData);
     navigate("/");
   };
 
@@ -42,6 +56,7 @@ const ProfilePage = () => {
                   : assets.avatar_icon
               }
             />
+            upload profile image
           </label>
           <input
             onChange={(e) => setName(e.target.value)}
@@ -68,9 +83,9 @@ const ProfilePage = () => {
         </form>
         {/* rightside  */}
         <img
-          src={assets.logo_icon}
+          src={authUser?.profilePic || assets.logo_icon}
           alt=""
-          className="max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10"
+          className={`max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10 ${selectedImg && "rounded-full"}}`}
         />
       </div>
     </div>
